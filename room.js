@@ -338,7 +338,8 @@ mod.extend = function(){
                 if( _.isUndefined(this._sources) ){
                     this._sources = [];
                     var addSource = id => { addById(this._sources, id); };
-                    this.memory.sources.forEach(addSource);
+                    //this.memory.sources.forEach(addSource);
+                    _.forEach(this.memory.sources,addSource);
                 }
                 return this._sources;
             }

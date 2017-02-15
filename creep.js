@@ -168,7 +168,7 @@ mod.extend = function(){
                 if( moveResult === ERR_NOT_FOUND ) delete this.data.path;
                 if( DEBUG && TRACE ) trace('Creep', {creepName:this.name, direction, moveResult, drive:'ok', Creep:'drive'});
             } else if( range > enoughRange ) {
-                this.say('NO PATH!');
+                this.say('NO PATH1');
                 this.data.targetId = null;
                 const leaveBorder = this.leaveBorder();
                 if( DEBUG && TRACE ) trace('Creep', {creepName:this.name, pos:this.pos, leaveBorder, nopath: 'zero len', drive: 'nopath', Creep:'drive'});
@@ -190,7 +190,7 @@ mod.extend = function(){
                 if( moveResult === ERR_NOT_FOUND ) delete this.data.path;
                 if( DEBUG && TRACE ) trace('Creep', {creepName:this.name, direction, moveResult, drive:'auto', Creep:'drive'});
             } else if( range > enoughRange ) {
-                this.say('NO PATH!');
+                this.say('NO PATH2');
                 this.data.targetId = null;
                 const leaveBorder = this.leaveBorder();
                 if( DEBUG && TRACE ) trace('Creep', {creepName:this.name, pos:this.pos, leaveBorder, nopath: 'blocked', drive: 'nopath', Creep:'drive'});
@@ -211,7 +211,7 @@ mod.extend = function(){
                 if( moveResult != OK ) logErrorCode(this, moveResult);
                 if( DEBUG && TRACE ) trace('Creep', {creepName:this.name, direction, moveResult, drive:'evade', Creep:'drive'});
             } else if( range > enoughRange ) {
-                this.say('NO PATH!');
+                this.say('NO PATH3');
                 this.data.targetId = null;
                 const leaveBorder = this.leaveBorder();
                 if( DEBUG && TRACE ) trace('Creep', {creepName:this.name, pos:this.pos, leaveBorder, nopath:'evade', drive:'nopath', Creep:'drive'});
@@ -343,7 +343,8 @@ mod.extend = function(){
     };
     
     Creep.prototype.controllerSign = function() {
-        if(CONTROLLER_SIGN && (!this.room.controller.sign || this.room.controller.sign.username != this.owner.username)) {
+        //Mimosa add string equal check
+        if(CONTROLLER_SIGN && ((!this.room.controller.sign || this.room.controller.sign.text!==CONTROLLER_SIGN_MESSAGE) || this.room.controller.sign.username != this.owner.username)) {
             this.signController(this.room.controller, CONTROLLER_SIGN_MESSAGE);
         }
     };

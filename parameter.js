@@ -5,13 +5,13 @@ let mod = {
     SAY_ASSIGNMENT: true, // say a symbol representing the assiged action
     SAY_PUBLIC: true, // creeps talk public
     DEBUG: true, // gimme some more details, use false not undefined to unset
-    TRACE: false, // use Memory.debugTrace for low-level information
+    TRACE: true, // use Memory.debugTrace for low-level information
     GRAFANA: false, // track for Grafana data
     GRAFANA_INTERVAL: 3, // loops between Grafana tracking - No lower than 3.
     CENSUS_ANNOUNCEMENTS: true, // log birth and death
     SELL_NOTIFICATION: true, // send mail when selling minerals
     SPAWN_INTERVAL: 5, // loops between regular spawn probe
-    ROOM_VISUALS: false, // display basic room statistics with RoomVisuals
+    ROOM_VISUALS: true, // display basic room statistics with RoomVisuals
     VISUALS: { // if ROOM_VISUALS is enabled, you can select what you want to display - All is a bit much for some people.
         ROOM: true, // displays basic info relative to the room
         ROOM_GLOBAL: true, // displays basic info relative to your account - requires ROOM: true
@@ -90,24 +90,25 @@ let mod = {
     REPORT_MAX_LENGTH: 500,
     REPORTS_PER_LOOP: 18,
     SEND_STATISTIC_REPORTS: true, // Set to true to receive room statistics per mail, otherwise set to false.
-    ROAD_CONSTRUCTION_ENABLE: false, // Set to False to disable automatic road construction, or to a number to enable for owned rooms reaching that RC Level
+    ROAD_CONSTRUCTION_ENABLE: 0, // Set to False to disable automatic road construction, or to a number to enable for owned rooms reaching that RC Level
     ROAD_CONSTRUCTION_INTERVAL: 500,
     ROAD_CONSTRUCTION_MIN_DEVIATION: 1.2,
     ROAD_CONSTRUCTION_ABS_MIN: 3,
-    TIME_ZONE: 1, // zone offset in hours (-12 through +12) from UTC
+    TIME_ZONE: +8, // zone offset in hours (-12 through +12) from UTC
     USE_SUMMERTIME: true, // Please define isSummerTime in global.js to suit to your local summertime rules
     SPAWN_DEFENSE_ON_ATTACK: true, // This will attempt to store enough to have a defense and spawn troops when invaded.
     MANAGED_CONTAINER_TRIGGER: 0.25, // managed containers get filled below this relative energy amount and emptied when above 1-this value
-    ROUTE_PRECALCULATION: false, // (experimental) required to use ROUTE_ROOM_COST with creep travel
+    ROUTE_PRECALCULATION: true, // (experimental) required to use ROUTE_ROOM_COST with creep travel
     ROUTE_ROOM_COST: {}, // custom room routing cost: e.g. `{ 'W4N4': 11 }`. Affects bestSpawnRoomFor, Creep.Setup calculations, and travel cost predictions. Please call 'delete Memory.routeRange;' whenever you change this property.
     NOTIFICATE_INVADER: false, // Also log common 'Invader' hostiles
     NOTIFICATE_INTRUDER: true, // Log any hostiles in your rooms
     NOTIFICATE_HOSTILES: true, // Log any hostiles - Ignores NOTIFICATE_INTRUDER and NOTIFICATE_INVADER
     COMBAT_CREEPS_RESPECT_RAMPARTS: false, // causes own creeps not to leave through ramparts
     COST_MATRIX_VALIDITY: 1000,
+    //Mimosa CONSTRUCTION_PRIORITY: [STRUCTURE_SPAWN,STRUCTURE_CONTAINER,STRUCTURE_EXTENSION,STRUCTURE_LINK,STRUCTURE_STORAGE,STRUCTURE_TOWER,STRUCTURE_ROAD,STRUCTURE_EXTRACTOR,STRUCTURE_WALL,STRUCTURE_RAMPART],
     CONSTRUCTION_PRIORITY: [STRUCTURE_SPAWN,STRUCTURE_EXTENSION,STRUCTURE_LINK,STRUCTURE_STORAGE,STRUCTURE_TOWER,STRUCTURE_ROAD,STRUCTURE_CONTAINER,STRUCTURE_EXTRACTOR,STRUCTURE_WALL,STRUCTURE_RAMPART],
-    CONTROLLER_SIGN: false,
-    CONTROLLER_SIGN_MESSAGE: "Territory of the Open Collaboration Society! (https://github.com/ScreepsOCS)",
+    CONTROLLER_SIGN: true,
+    CONTROLLER_SIGN_MESSAGE: "The base of Dragon and Mimosa.",
     REMOTE_HAULER_MULTIPLIER: 1, // Max number of haulers spawned per source in a remote mining room.
     REMOTE_HAULER_CHECK_INTERVAL: 5, // how many ticks before we check to see if new haulers need spawninig?
     REMOTE_HAULER_REHOME: false, // May haulers choose closer storage for delivery?
@@ -117,7 +118,7 @@ let mod = {
     REMOTE_HAULER_DRIVE_BY_BUILD_RANGE: 1, // A creep's max build distance is 3 but cpu can be saved by dropping the search distance to 1.
     REMOTE_HAULER_DRIVE_BY_BUILD_ALL: false, // If REMOTE_HAULER_DRIVE_BY_BUILDING is enabled then this option will allow remote haulers will drive-by-build any of your structures.
     REMOTE_WORKER_MULTIPLIER: 1, // Number of workers spawned per remote mining room.
-    PLAYER_WHITELIST: ['cyberblast','SirLovi','Asku','Kazume','Noxeth','MrDave','Telemac','Xephael','Zoiah','fsck-u','FaceWound','forkmantis','Migaaresno','xAix1999','silentpoots','arguinyano','OokieCookie','OverlordQ','Nibinhilion','Crowsbane','Yew','BogdanBiv','s1akr','Pandabear41','Logmadr','Patrik','novice','Conquest','ofirl','GeorgeBerkeley','TTR','tynstar','K-C','Hoekynl','Sunri5e','AgOrange','distantcam','Lisp','bbdMinimbl','Twill','Logxen','miR','Spedwards','Krazyfuq','Icesory','chobobobo','deft-code','mmmd','DKPlugins','pavelnieks','buckley310','almaravarion'],
+    PLAYER_WHITELIST: ['AMD'],
     // Don't attack. Must be a member of OCS for permanent whitelisting in git repository. But you can change your own copy... Please ask if you are interested in joining OCS :)
     DEFENSE_BLACKLIST: [], // Don't defend those rooms (add room names). Blocks spawning via defense task (will not prevent offensive actions at all)
 };

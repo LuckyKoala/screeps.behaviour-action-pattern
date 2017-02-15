@@ -30,6 +30,11 @@ setup.byPopulation = function(type, start, perBody, limit) {
         }
     };
 };
+//Mimosa: temp change to 2 to speeding...
+setup.isValidSetup = function(room) {
+    const count = room.population.typeCount[this.type] || 0;
+    return count<2;
+}
 setup.RCL = {
     1: {
         fixedBody: [],
