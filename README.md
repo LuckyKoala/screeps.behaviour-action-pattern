@@ -1,3 +1,7 @@
+# Notice
+This project was forked from dev branch of ScreepsOCS/screeps.behaviour-action-pattern.
+It will not sync with origin repository anymore,so you should't do that either.
+
 # Open Collaboration Society
 
 [![slack](https://img.shields.io/badge/chat-on%20slack-blue.svg)](https://screeps.slack.com/messages/ocs/)
