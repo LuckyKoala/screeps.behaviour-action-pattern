@@ -69,8 +69,8 @@ mod.nextAction = function(creep){
             } else {
                 priority = [
                     Creep.action.repairing,
+					Creep.action.building,
                     Creep.action.feeding,
-                    Creep.action.building,
                     Creep.action.fueling,
                     Creep.action.fortifying,
                     Creep.action.charging,
