@@ -25,7 +25,7 @@ let mod = {
         WALL: false, // highlight weakest wall and display hits
         RAMPART: false, // highlight weakest rampart and display hits
         ROAD: false, // highlight weakest road and display hits
-        HEATMAP: false, // collects creep positioning to display a heatmap
+        HEATMAP: true, // collects creep positioning to display a heatmap
         HEATMAP_INTERVAL: 2, // intervals between collections
     },
     MAX_STORAGE_ENERGY: { // get rid of energy when reached
@@ -52,7 +52,7 @@ let mod = {
     MIN_MINERAL_SELL_AMOUNT:20000,
     ENERGY_VALUE_CREDITS: 0.15, // assumed energy exchange rate (in credits) to determine best mineral sell offer
     //MAX_SELL_RANGE: 60,
-    TERMINAL_ENERGY: 100000,
+    TERMINAL_ENERGY: 10000,
     MIN_SELL_RATIO: {
         'H': 0.2,
         'O': 0.2,
@@ -106,7 +106,7 @@ let mod = {
     COMBAT_CREEPS_RESPECT_RAMPARTS: false, // causes own creeps not to leave through ramparts
     COST_MATRIX_VALIDITY: 1000,
     //Mimosa CONSTRUCTION_PRIORITY: [STRUCTURE_SPAWN,STRUCTURE_CONTAINER,STRUCTURE_EXTENSION,STRUCTURE_LINK,STRUCTURE_STORAGE,STRUCTURE_TOWER,STRUCTURE_ROAD,STRUCTURE_EXTRACTOR,STRUCTURE_WALL,STRUCTURE_RAMPART],
-    CONSTRUCTION_PRIORITY: [STRUCTURE_SPAWN,STRUCTURE_EXTENSION,STRUCTURE_LINK,STRUCTURE_STORAGE,STRUCTURE_TOWER,STRUCTURE_ROAD,STRUCTURE_CONTAINER,STRUCTURE_EXTRACTOR,STRUCTURE_WALL,STRUCTURE_RAMPART],
+    CONSTRUCTION_PRIORITY: [STRUCTURE_SPAWN,STRUCTURE_EXTENSION,STRUCTURE_LINK,STRUCTURE_STORAGE,STRUCTURE_TOWER,STRUCTURE_CONTAINER,STRUCTURE_ROAD,STRUCTURE_EXTRACTOR,STRUCTURE_WALL,STRUCTURE_RAMPART],
     CONTROLLER_SIGN: true,
     CONTROLLER_SIGN_MESSAGE: "The base of Dragon and Mimosa.",
     REMOTE_HAULER_MULTIPLIER: 1, // Max number of haulers spawned per source in a remote mining room.

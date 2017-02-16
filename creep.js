@@ -103,6 +103,9 @@ mod.extend = function(){
     Creep.prototype.leaveBorder = function() {
         // if on border move away
         // for emergency case, Path not found
+        
+        console.log(this.name+">>> leaveBorder...");
+        
         let dir = 0;
         if( this.pos.y === 0 ){
             dir = BOTTOM;
