@@ -172,7 +172,8 @@ mod.CRAYON = {
     death: { color: 'black', 'font-weight': 'bold' },
     birth: '#e6de99',
     error: '#e79da7',
-    system: { color: '#999', 'font-size': '10px' }
+    system: { color: '#999', 'font-size': '10px' },
+	cli: { color: '#41af1e', 'font-size': '10px' }
 };
 // log an error for a creeps action, given an error code
 mod.logErrorCode = function(creep, code) {

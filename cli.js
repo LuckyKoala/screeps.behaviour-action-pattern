@@ -1,9 +1,9 @@
 let mod = {};
 module.exports = mod;
 
-mod.response = function(roomName, message) {
-    let text = dye(CRAYON.system, roomName);
-    console.log( dye(CRAYON.system, message) );
+mod.response = function(message) {
+    let prefix = dye(CRAYON.cli, 'CLI > ');
+    console.log( prefix + message );
 };
 mod.help = function() {
 	mod.response("Help Menu Response");
