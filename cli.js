@@ -3,7 +3,7 @@ module.exports = mod;
 
 mod.response = function(roomName, message) {
     let text = dye(CRAYON.system, roomName);
-    console.log( dye(CRAYON.system, message );
+    console.log( dye(CRAYON.system, message) );
 };
 mod.help = function() {
 	response("Help Menu Response");
