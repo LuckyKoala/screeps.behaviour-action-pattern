@@ -133,7 +133,7 @@ global.install = () => {
         Events: load('events'),
         Grafana: GRAFANA ? load('grafana') : undefined,
         Visuals: ROOM_VISUALS ? load('visuals') : undefined,
-		Cli: load("cli"),
+		c: load("cli"),
     });
     _.assign(global.Task, {
         guard: load("task.guard"),
