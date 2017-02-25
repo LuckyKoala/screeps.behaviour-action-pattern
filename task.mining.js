@@ -150,8 +150,8 @@ mod.checkForRequiredCreeps = (flag) => {
     else sourceCount = 1;
 
     //Check if sk room
-    let isSKRoom = Room.isSKRoom(roomName);
-    let creepTypes = isSKRoom ? ['remoteHauler', 'remoteMiner', 'remoteWorker', 'remoteMineralMiner', 'melee'] : ['remoteHauler', 'remoteMiner', 'remoteWorker'];
+    let isCenterNineRoom = Room.isCenterNineRoom(roomName);
+    let creepTypes = isCenterNineRoom ? ['remoteHauler', 'remoteMiner', 'remoteWorker', 'remoteMineralMiner', 'melee'] : ['remoteHauler', 'remoteMiner', 'remoteWorker'];
 
     // do we need to validate our spawning entries?
     for (const type of creepTypes) {
