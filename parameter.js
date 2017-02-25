@@ -118,6 +118,8 @@ let mod = {
     REMOTE_HAULER_DRIVE_BY_BUILD_RANGE: 1, // A creep's max build distance is 3 but cpu can be saved by dropping the search distance to 1.
     REMOTE_HAULER_DRIVE_BY_BUILD_ALL: false, // If REMOTE_HAULER_DRIVE_BY_BUILDING is enabled then this option will allow remote haulers will drive-by-build any of your structures.
     REMOTE_WORKER_MULTIPLIER: 1, // Number of workers spawned per remote mining room.
+    SOURCE_KEEPER_GUARD_AMOUNT: 2, //Number of guard spawned per remote sk mining room.
+    SOURCE_KEEPER_CREEP_FLEE_DISTANCE: 6, //Number of safe distance for non-combat sk creep.
     PLAYER_WHITELIST: ['AMD'],
     // Don't attack. Must be a member of OCS for permanent whitelisting in git repository. But you can change your own copy... Please ask if you are interested in joining OCS :)
     DEFENSE_BLACKLIST: [], // Don't defend those rooms (add room names). Blocks spawning via defense task (will not prevent offensive actions at all)

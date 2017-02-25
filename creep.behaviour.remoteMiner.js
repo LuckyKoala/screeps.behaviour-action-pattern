@@ -6,8 +6,14 @@ mod.run = function(creep) {
     
     // assign Action
     if( creep.room.name == creep.data.destiny.room ){
-        // if we're there, be a miner.
-        this.mine(creep);
+        if(Room.isSKRoom(creep.data.destiny.room.name)) {
+            //If creep's target is SK room
+            if( creep.data.destiny && creep.data.destiny.task && Task[creep.data.destiny.task] && Task[creep.data.destiny.task].nextAction ) 
+                Task[creep.data.destiny.task].nextAction(creep);
+        } else {
+            // if we're there, be a miner.
+            this.mine(creep);
+        }
         return;
     } else {
         // else go there

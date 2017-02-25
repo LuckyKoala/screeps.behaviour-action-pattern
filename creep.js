@@ -235,14 +235,17 @@ mod.extend = function(){
             return path.substr(4);
         else return null;
     };
-    Creep.prototype.fleeMove = function() {
+    //Inject append targets.
+    Creep.prototype.fleeMove = function(appendTargets) {
         if( DEBUG && TRACE ) trace('Creep', {creepName:this.name, pos:this.pos, Action:'fleeMove', Creep:'run'});
         let drop = r => { if(this.carry[r] > 0 ) this.drop(r); };
         _.forEach(Object.keys(this.carry), drop);
         if( this.fatigue > 0 ) return;
         let path;
         if( !this.data.fleePath || this.data.fleePath.length < 2 || this.data.fleePath[0].x != this.pos.x || this.data.fleePath[0].y != this.pos.y || this.data.fleePath[0].roomName != this.pos.roomName ) {
-            let goals = _.map(this.room.hostiles, function(o) {
+            let targets = this.room.hostiles;
+            if(!_.isUndefined(appendTargets)) targets = targets.concat(appendTargets);
+            let goals = _.map(targets, function(o) {
                 return { pos: o.pos, range: 5 };
             });
 

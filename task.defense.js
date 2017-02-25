@@ -26,7 +26,9 @@ mod.handleNewInvader = invaderCreep => {
         
         if( !flag )
             return; // ignore invader
-    } 
+    }
+    //if it is in SK room,ignore
+    if(Room.isSKRoom(invaderCreep.room.name)) return; 
     // check room threat balance
     if( invaderCreep.room.defenseLevel.sum > invaderCreep.room.hostileThreatLevel ) {
         // room can handle that
