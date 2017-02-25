@@ -348,4 +348,7 @@ mod.guid = function(){
         return v.toString(16);
     });
 };
+mod.isNil = function(o) {
+    return _.isUndefined(o) || _.isNull(o);
+}
 mod = _.bindAll(mod);

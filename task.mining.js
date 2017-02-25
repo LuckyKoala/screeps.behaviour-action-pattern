@@ -174,7 +174,7 @@ mod.checkForRequiredCreeps = (flag) => {
             running = _.map(memory.running[type], n => Game.creeps[n]);
         }
         let runningCount = _.filter(running, c => !Task.mining.needsReplacement(c)).length;
-        return memory.queued[type].length + memory.spawning[type].length + runningCount;
+        return _.get(memory, ['queued',type,'length'], 0) + _.get(memory, ['spawning',type,'length'], 0) + runningCount;
     };
 
     let haulerCount = countExisting('remoteHauler');
@@ -278,6 +278,7 @@ mod.checkForRequiredCreeps = (flag) => {
             );
         }
     }
+    if(!isCenterNineRoom) return; //Stop here
     if(guardCount < SOURCE_KEEPER_GUARD_AMOUNT) {
         Task.spawn(
             Task.mining.creep.guard, // creepDefinition
@@ -293,7 +294,7 @@ mod.checkForRequiredCreeps = (flag) => {
             },
             creepSetup => { // callback onQueued
                 let memory = Task.mining.memory(Game.flags[creepSetup.destiny.targetName]);
-                memory.queued.push({
+                memory.queued[creepSetup.behaviour].push({
                     room: creepSetup.queueRoom,
                     name: creepSetup.name,
                     targetName: flag.name
@@ -316,7 +317,7 @@ mod.checkForRequiredCreeps = (flag) => {
             },
             creepSetup => { // callback onQueued
                 let memory = Task.mining.memory(Game.flags[creepSetup.destiny.targetName]);
-                memory.queued.push({
+                memory.queued[creepSetup.behaviour].push({
                     room: creepSetup.queueRoom,
                     name: creepSetup.name,
                     targetName: flag.name
@@ -451,6 +452,7 @@ mod.nextAction = creep => {
     //3.Idle.
     if(creep.data.creepType==='melee') {
         //If there are alive hostile creeps,use it orinal nextAction.
+        if(creep.room.name != creep.data.destiny.room) Creep.action.travelling.assign(creep, Game.flags[creep.data.destiny.targetName]);
         if(creep.room.hostiles && creep.room.hostiles.length>0) {
             Creep.behaviour['melee'].nextAction(creep);
             return;
@@ -458,7 +460,7 @@ mod.nextAction = creep => {
         //Find spawning KeeperLair and go there to prepare.
         let spawningKeeperLair = creep.pos.findClosestByRange(keeperLairs);
         //Stay close to keeper lair.
-        if(!_.isUndefined(spawningKeeperLair)) {
+        if(!isNil(spawningKeeperLair)) {
             creep.drive( spawningKeeperLair.pos, 1, 1, Infinity );
             return;
         }
