@@ -896,8 +896,18 @@ mod.extend = function(){
 
     Room.prototype.roadConstruction = function( minDeviation = ROAD_CONSTRUCTION_MIN_DEVIATION ) {
 
-        if( !ROAD_CONSTRUCTION_ENABLE || Game.time % ROAD_CONSTRUCTION_INTERVAL != 0 ) return;
-        if( _.isNumber(ROAD_CONSTRUCTION_ENABLE) && (!this.my || ROAD_CONSTRUCTION_ENABLE > this.controller.level)) return;
+        //TODO imporve road construction in mining room
+        let roomCenterPos = new RoomPosition(25, 25, this.name);
+        let isMiningFlag = (flag) => ( flag.color == FLAG_COLOR.claim.mining.color && flag.secondaryColor == FLAG_COLOR.claim.mining.secondaryColor );
+        let flag = FlagDir.find(isMiningFlag, roomCenterPos, false);
+        let buildMiningRoad = (ROAD_CONSTRUCTION_ENABLE_MINING && flag);
+        if(!buildMiningRoad) {
+            if( !ROAD_CONSTRUCTION_ENABLE || Game.time % ROAD_CONSTRUCTION_INTERVAL != 0 ) return;
+            if( _.isNumber(ROAD_CONSTRUCTION_ENABLE) && (!this.my || ROAD_CONSTRUCTION_ENABLE > this.controller.level)) return;
+        }
+        let siteTotal = _.size(Game.constructionSites);
+        let siteCanCreate = Math.min(100-siteTotal,30); 
+        if(!siteCanCreate) return; //No space for new road
 
         let data = Object.keys(this.roadConstructionTrace)
             .map( k => {
@@ -922,7 +932,7 @@ mod.extend = function(){
         // build roads on all most frequent used fields
         let setSite = pos => {
             if( DEBUG ) logSystem(this.name, `Constructing new road at ${pos.x}'${pos.y} (${pos.n} traces)`);
-            this.createConstructionSite(pos.x, pos.y, STRUCTURE_ROAD);
+            if(siteCanCreate--) this.createConstructionSite(pos.x, pos.y, STRUCTURE_ROAD);
         };
         _.forEach(data, setSite);
 

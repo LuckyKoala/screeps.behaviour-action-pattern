@@ -28,7 +28,7 @@ action.run = {
         let range = creep.pos.getRangeTo(creep.target);
         if( !creep.flee ){
             if( range > 3 ){
-                let path = creep.room.findPath(creep.pos, creep.target.pos, {ignoreCreeps: false});
+                let path = creep.room.findPath(creep.pos, creep.target.pos, {ignoreCreeps: false, maxRooms: 1});
                 if( path && path.length > 0 ) {
                     let isRampart = COMBAT_CREEPS_RESPECT_RAMPARTS && _.some( creep.room.lookForAt(LOOK_STRUCTURES, path[0].x, path[0].y), {'structureType': STRUCTURE_RAMPART });
                     if(!isRampart){

@@ -91,6 +91,7 @@ let mod = {
     REPORTS_PER_LOOP: 18,
     SEND_STATISTIC_REPORTS: true, // Set to true to receive room statistics per mail, otherwise set to false.
     ROAD_CONSTRUCTION_ENABLE: 6, // Set to False to disable automatic road construction, or to a number to enable for owned rooms reaching that RC Level
+    ROAD_CONSTRUCTION_ENABLE_MINING: true, //Build road in remote mining room
     ROAD_CONSTRUCTION_INTERVAL: 500,
     ROAD_CONSTRUCTION_MIN_DEVIATION: 1.2,
     ROAD_CONSTRUCTION_ABS_MIN: 3,

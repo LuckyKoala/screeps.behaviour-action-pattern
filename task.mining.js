@@ -219,6 +219,7 @@ mod.checkForRequiredCreeps = (flag) => {
         }
     }
 
+    //TODO only spawn miners for sk room a ranger has been spawned for
     if(minerCount < sourceCount) {
         if( DEBUG && TRACE ) trace('Task', {Task:mod.name, room:roomName, minerCount,
             minerTTLs: _.map(_.map(memory.running.remoteMiner, n=>Game.creeps[n]), "ticksToLive"), [mod.name]:'minerCount'});
@@ -249,7 +250,8 @@ mod.checkForRequiredCreeps = (flag) => {
 
     //TODO can hauler handle carry staff about mineral?
     // only spawn haulers for sources a miner has been spawned for
-    let runningMinerLength = memory.running.remoteMiner.length+memory.running.remoteMineralMiner.length
+    let runningMinerLength = memory.running.remoteMiner.length;
+    if(isCenterNineRoom) runningMinerLength=runningMinerLength+memory.running.remoteMineralMiner.length;
     let maxHaulers = Math.ceil(runningMinerLength * REMOTE_HAULER_MULTIPLIER);
     if(haulerCount < maxHaulers && (!memory.capacityLastChecked || Game.time - memory.capacityLastChecked > REMOTE_HAULER_CHECK_INTERVAL)) {
         for(let i = haulerCount; i < maxHaulers; i++) {
@@ -450,7 +452,7 @@ mod.creep = {
         queue: 'Low' 
     },
 };
-mod.isKeeperLairSafe = lair=>lair.ticksToSpawn>30;
+mod.isKeeperLairSafe = lair=>lair.ticksToSpawn>40;
 mod.isKeeperLairSafeForWorker = lair=>lair.ticksToSpawn>7;
 // define action assignment for remote sourcekeeper mining creeps
 mod.nextAction = creep => {
@@ -460,7 +462,7 @@ mod.nextAction = creep => {
         }
     });
     let keeperLairsToWorker = _.filter(keeperLairs, function(object) {
-        return object.structureType===STRUCTURE_KEEPER_LAIR && !Task.mining.isKeeperLairSafe(object);
+        return object.structureType===STRUCTURE_KEEPER_LAIR && !Task.mining.isKeeperLairSafeForWorker(object);
     });
     // override behaviours nextAction function
     // this could be a global approach to manipulate creep behaviour

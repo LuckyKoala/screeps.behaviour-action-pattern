@@ -233,6 +233,7 @@ mod.extend = function(){
         });
         //Experimental single room path search in case of stuck in the edge
         //maxRooms:１
+        //Handle portal
 
         if( path && path.length > 4 )
             return path.substr(4);
