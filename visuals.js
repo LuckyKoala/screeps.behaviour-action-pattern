@@ -129,7 +129,7 @@ module.exports = class Visuals {
 	static drawSpawnInfo(spawn) {
 		if (!spawn.spawning) return;
 		const vis = new RoomVisual(spawn.room.name);
-		vis.text(`${spawn.spawning.name} (${((spawn.spawning.needTime - spawn.spawning.remainingTime) / spawn.spawning.needTime * 100).toFixed(1)}%)`, spawn.pos.x + 1, spawn.pos.y - 0.5, {align: 'left', size: 0.4,});
+		vis.text(`${spawn.spawning.name} (${((spawn.spawning.needTime - spawn.spawning.remainingTime) / spawn.spawning.needTime * 100).toFixed(1)}%)`, spawn.pos.x + 1, spawn.pos.y - 0.5, {align: 'left', font: 0.4,});
 	}
 	
 	static drawMineralInfo(mineral) {
@@ -137,9 +137,9 @@ module.exports = class Visuals {
 		let x = mineral.pos.x + 1;
 		let y = mineral.pos.y - 0.5;
 		if (mineral.mineralAmount) {
-			vis.text(`Amount: ${formatNum(mineral.mineralAmount)}`, x, y, {align: 'left', size: 0.4,});
+			vis.text(`Amount: ${formatNum(mineral.mineralAmount)}`, x, y, {align: 'left', font: 0.4,});
 		} else {
-			vis.text(`Regen: ${formatNum(mineral.ticksToRegeneration)}`, x, y, {align: 'left', size: 0.4,});
+			vis.text(`Regen: ${formatNum(mineral.ticksToRegeneration)}`, x, y, {align: 'left', font: 0.4,});
 		}
 	}
 	
@@ -148,9 +148,9 @@ module.exports = class Visuals {
 		let x = source.pos.x + 0.5;
 		let y = source.pos.y - 0.5;
 		if (source.energy) {
-			vis.text(`Amount: ${source.energy}`, x, y, {align: 'left', size: 0.4,});
+			vis.text(`Amount: ${source.energy}`, x, y, {align: 'left', font: 0.4,});
 		} else {
-			vis.text(`Regen: ${source.ticksToRegeneration}`, x, y, {align: 'left', size: 0.4,});
+			vis.text(`Regen: ${source.ticksToRegeneration}`, x, y, {align: 'left', font: 0.4,});
 		}
 	}
 	
@@ -158,7 +158,7 @@ module.exports = class Visuals {
 		const vis = new RoomVisual(controller.room.name);
 		const BASE_X = controller.pos.x + 1;
 		let y = controller.pos.y - 0.5;
-		const style = {align: 'left', size: 0.4,};
+		const style = {align: 'left', font: 0.4,};
 		vis.text(`L: ${controller.level}`, BASE_X, y, style);
 		vis.text(`P: ${formatNum(controller.progress)}/${formatNum(controller.progressTotal)} (${(controller.progress / controller.progressTotal * 100).toFixed(2)}%)`, BASE_X, y += 0.4, style);
 		if (controller.ticksToDowngrade < CONTROLLER_DOWNGRADE[controller.level]) {
@@ -172,7 +172,7 @@ module.exports = class Visuals {
 		let weakest = _(room.find(FIND_STRUCTURES)).filter(s => s.structureType === type).min(s => s.hits);
 		if (weakest && weakest.pos) {
 			vis.circle(weakest.pos.x, weakest.pos.y, {radius: 0.4, fill: '#FF0000', opacity: 0.3, strokeWidth: 0,});
-			vis.text(`H: ${formatNum(weakest.hits)} (${(weakest.hits / weakest.hitsMax * 100).toFixed(2)}%)`, weakest.pos.x + 0.5, weakest.pos.y - 0.1, {align: 'left', size: 0.4,});
+			vis.text(`H: ${formatNum(weakest.hits)} (${(weakest.hits / weakest.hitsMax * 100).toFixed(2)}%)`, weakest.pos.x + 0.5, weakest.pos.y - 0.1, {align: 'left', font: 0.4,});
 		}
 	}
 	
@@ -330,7 +330,7 @@ function formatNum(n) {
 }
 
 function storageObject(vis, store, x, startY) {
-	Object.keys(store).forEach(resource => vis.text(`${resource}: ${formatNum(store[resource])}`, x, startY += 0.6, {align: 'left', size: 0.5, color: getResourceColour(resource)}));
+	Object.keys(store).forEach(resource => vis.text(`${resource}: ${formatNum(store[resource])}`, x, startY += 0.6, {align: 'left', font: 0.5, color: getResourceColour(resource)}));
 }
 
 function getResourceColour(resourceType) {
