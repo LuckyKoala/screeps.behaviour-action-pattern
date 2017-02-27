@@ -488,8 +488,7 @@ mod.nextAction = creep => {
             //creep.drive( spawningKeeperLair.pos, 1, 1, Infinity );
             return;
         }
-        //TODO Heal nearby injured creep
-        Creep.action.idle.assign(creep);
+        Creep.action.healing.assign(creep) || Creep.action.idle.assign(creep);
         return;
     } 
     //Common override behviour of miner,hauler,mineralMiner and worker:

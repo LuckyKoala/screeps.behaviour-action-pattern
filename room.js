@@ -899,7 +899,7 @@ mod.extend = function(){
         //TODO imporve road construction in mining room
         let roomCenterPos = new RoomPosition(25, 25, this.name);
         let isMiningFlag = (flag) => ( flag.color == FLAG_COLOR.claim.mining.color && flag.secondaryColor == FLAG_COLOR.claim.mining.secondaryColor );
-        let flag = FlagDir.find(isMiningFlag, roomCenterPos, false);
+        let flag = FlagDir.find(isMiningFlag, roomCenterPos, true);
         let buildMiningRoad = (ROAD_CONSTRUCTION_ENABLE_MINING && flag);
         if(!buildMiningRoad) {
             if( !ROAD_CONSTRUCTION_ENABLE || Game.time % ROAD_CONSTRUCTION_INTERVAL != 0 ) return;
