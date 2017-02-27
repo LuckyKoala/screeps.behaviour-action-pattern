@@ -3,7 +3,10 @@ module.exports = class Visuals {
 	static run() {
 		for (let roomName in Game.rooms) {
 			const room = Game.rooms[roomName];
-			if (!room.my) continue; // Skip rooms not owned by you
+			if (!room.my) {
+				Visuals.drawCreepPath(room);
+				continue; // Skip rooms not owned by you
+			}
 			
 			if (Memory.heatmap === undefined) Memory.heatmap = false;
 			
