@@ -175,7 +175,8 @@ global.install = () => {
             robbing:load("creep.action.robbing"),
             reallocating:load("creep.action.reallocating"),
             recycling:load("creep.action.recycling"),
-            attackController:load("creep.action.attackController")
+            attackController:load("creep.action.attackController"),
+            avoiding:load("creep.action.avoiding")
         },
         behaviour: {
             claimer: load("creep.behaviour.claimer"),
