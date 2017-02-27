@@ -906,8 +906,8 @@ mod.extend = function(){
             if( _.isNumber(ROAD_CONSTRUCTION_ENABLE) && (!this.my || ROAD_CONSTRUCTION_ENABLE > this.controller.level)) return;
         }
         let siteTotal = _.size(Game.constructionSites);
-        let siteCanCreate = Math.min(100-siteTotal,30); 
-        if(!siteCanCreate) return; //No space for new road
+        let siteCanCreate = Math.min(80-siteTotal,30); //Only place new road when total amount below 80 
+        if(siteCanCreate<=0) return; //No space for new road
 
         let data = Object.keys(this.roadConstructionTrace)
             .map( k => {
@@ -932,7 +932,7 @@ mod.extend = function(){
         // build roads on all most frequent used fields
         let setSite = pos => {
             if( DEBUG ) logSystem(this.name, `Constructing new road at ${pos.x}'${pos.y} (${pos.n} traces)`);
-            if(siteCanCreate--) this.createConstructionSite(pos.x, pos.y, STRUCTURE_ROAD);
+            if((siteCanCreate--)>0) this.createConstructionSite(pos.x, pos.y, STRUCTURE_ROAD);
         };
         _.forEach(data, setSite);
 
