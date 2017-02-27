@@ -455,7 +455,7 @@ mod.creep = {
 mod.isKeeperLairSafe = lair=>lair.ticksToSpawn>40;
 mod.isKeeperLairSafeForWorker = lair=>lair.ticksToSpawn>7;
 // define action assignment for remote sourcekeeper mining creeps
-mod.nextAction = creep => {
+mod.nextAction = (creep,dontAssign) => {
     let keeperLairs = creep.room.find(FIND_HOSTILE_STRUCTURES,{
         filter: function(object) {
             return object.structureType===STRUCTURE_KEEPER_LAIR && !Task.mining.isKeeperLairSafe(object);
@@ -508,6 +508,7 @@ mod.nextAction = creep => {
         return;
     }
     //Then we're safe,continue working
+    if(dontAssign) return;
     if(creep.data.creepType==='remoteMiner' || creep.data.creepType==='remoteMineralMiner') {
         Creep.behaviour[creep.data.creepType].mine(creep);
     } else {

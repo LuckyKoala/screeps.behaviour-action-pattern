@@ -12,6 +12,12 @@ mod.run = function(creep) {
         } else {
             this.nextAction(creep);
         }
+    } else {
+        if(creep.room.name===creep.data.destiny.room && Room.isSKRoom(creep.data.destiny.room)) {
+            //If creep's target is SK room
+            if( creep.data.destiny && creep.data.destiny.task && Task[creep.data.destiny.task] && Task[creep.data.destiny.task].nextAction ) 
+                Task[creep.data.destiny.task].nextAction(creep, true); //Dont assign next action,only override
+        }
     }
     
     // Do some work
