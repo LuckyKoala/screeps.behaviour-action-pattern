@@ -151,7 +151,7 @@ mod.checkForRequiredCreeps = (flag) => {
 
     //Check if sk room
     let isCenterNineRoom = Room.isCenterNineRoom(roomName);
-    let creepTypes = isCenterNineRoom ? ['remoteHauler', 'remoteMiner', 'remoteWorker', 'remoteMineralMiner', 'melee'] : ['remoteHauler', 'remoteMiner', 'remoteWorker'];
+    let creepTypes = isCenterNineRoom ? ['remoteHauler', 'remoteMiner', 'remoteWorker', 'remoteMineralMiner', 'ranger'] : ['remoteHauler', 'remoteMiner', 'remoteWorker'];
 
     // do we need to validate our spawning entries?
     for (const type of creepTypes) {
@@ -174,18 +174,50 @@ mod.checkForRequiredCreeps = (flag) => {
             running = _.map(memory.running[type], n => Game.creeps[n]);
         }
         let runningCount = _.filter(running, c => !Task.mining.needsReplacement(c)).length;
-        return _.get(memory, ['queued',type,'length'], 0) + _.get(memory, ['spawning',type,'length'], 0) + runningCount;
+        //console.log('Type => '+type+"\nData => "+JSON.stringify(memory));
+        return memory.queued[type].length + memory.spawning[type].length + runningCount;
     };
 
     let haulerCount = countExisting('remoteHauler');
     let minerCount = countExisting('remoteMiner');
     let workerCount = countExisting('remoteWorker');
-    let guardCount = countExisting('melee');
-    let mineralMinerCount = countExisting('mineralMiner');
+    let guardCount;
+    let mineralMinerCount;
+    if(isCenterNineRoom) {
+        guardCount = countExisting('ranger');
+        mineralMinerCount = countExisting('remoteMineralMiner');
+    }
     
     // TODO: calculate creeps by type needed per source / mineral
 
     if( DEBUG && TRACE ) trace('Task', {Task:mod.name, flagName:flag.name, sourceCount, haulerCount, minerCount, workerCount, [mod.name]:'Flag.found'}, 'checking flag@', flag.pos);
+
+    if(isCenterNineRoom) {
+        if(guardCount < SOURCE_KEEPER_GUARD_AMOUNT) {
+            Task.spawn(
+                Task.mining.creep.guard, // creepDefinition
+                { // destiny
+                    task: mod.name, // taskName
+                    targetName: flag.name, // targetName
+                    type: Task.mining.creep.guard.behaviour,
+                    flagName: flag.name // custom
+                }, 
+                { // spawn room selection params
+                    targetRoom: flag.pos.roomName, 
+                    minEnergyCapacity: 4600, 
+                    rangeRclRatio: 1.5 // stronger preference of higher RCL rooms
+                },
+                creepSetup => { // callback onQueued
+                    let memory = Task.mining.memory(creepSetup.destiny.room);
+                    memory.queued[creepSetup.behaviour].push({
+                        room: creepSetup.queueRoom,
+                        name: creepSetup.name,
+                        targetName: flag.name
+                    });
+                }
+            );
+        }
+    }
 
     if(minerCount < sourceCount) {
         if( DEBUG && TRACE ) trace('Task', {Task:mod.name, room:roomName, minerCount,
@@ -215,8 +247,10 @@ mod.checkForRequiredCreeps = (flag) => {
         }
     }
 
+    //TODO can hauler handle carry staff about mineral?
     // only spawn haulers for sources a miner has been spawned for
-    let maxHaulers = Math.ceil(memory.running.remoteMiner.length * REMOTE_HAULER_MULTIPLIER);
+    let runningMinerLength = memory.running.remoteMiner.length+memory.running.remoteMineralMiner.length
+    let maxHaulers = Math.ceil(runningMinerLength * REMOTE_HAULER_MULTIPLIER);
     if(haulerCount < maxHaulers && (!memory.capacityLastChecked || Game.time - memory.capacityLastChecked > REMOTE_HAULER_CHECK_INTERVAL)) {
         for(let i = haulerCount; i < maxHaulers; i++) {
             const spawnRoom = mod.strategies.hauler.spawnRoom(roomName);
@@ -278,53 +312,33 @@ mod.checkForRequiredCreeps = (flag) => {
             );
         }
     }
-    if(!isCenterNineRoom) return; //Stop here
-    if(guardCount < SOURCE_KEEPER_GUARD_AMOUNT) {
-        Task.spawn(
-            Task.mining.creep.guard, // creepDefinition
-            { // destiny
-                task: mod.name, // taskName
-                targetName: flag.name, // targetName
-                flagName: flag.name // custom
-            }, 
-            { // spawn room selection params
-                targetRoom: flag.pos.roomName, 
-                minEnergyCapacity: 1600, 
-                rangeRclRatio: 1.8 // stronger preference of higher RCL rooms
-            },
-            creepSetup => { // callback onQueued
-                let memory = Task.mining.memory(Game.flags[creepSetup.destiny.targetName]);
-                memory.queued[creepSetup.behaviour].push({
-                    room: creepSetup.queueRoom,
-                    name: creepSetup.name,
-                    targetName: flag.name
-                });
-            }
-        );
+    //TODO mineralMiner to work on mineral
+    if(isCenterNineRoom) {
+        if(mineralMinerCount < 1) {
+            Task.spawn(
+                Task.mining.creep.remoteMineralMiner, // creepDefinition
+                { // destiny
+                    task: mod.name, // taskName
+                    targetName: flag.name, // targetName
+                    type: Task.mining.creep.remoteMineralMiner.behaviour,
+                    flagName: flag.name // custom
+                }, 
+                { // spawn room selection params
+                    targetRoom: flag.pos.roomName, 
+                    minEnergyCapacity: 550, 
+                    rangeRclRatio: 1.2 // stronger preference of higher RCL rooms
+                },
+                creepSetup => { // callback onQueued
+                    let memory = Task.mining.memory(creepSetup.destiny.room);
+                    memory.queued[creepSetup.behaviour].push({
+                        room: creepSetup.queueRoom,
+                        name: creepSetup.name,
+                        targetName: flag.name
+                    });
+                }
+            );
+        }    
     }
-    if(mineralMinerCount < 1) {
-        Task.spawn(
-            Task.mining.creep.remoteMineralMiner, // creepDefinition
-            { // destiny
-                task: mod.name, // taskName
-                targetName: flag.name, // targetName
-                flagName: flag.name // custom
-            }, 
-            { // spawn room selection params
-                targetRoom: flag.pos.roomName, 
-                minEnergyCapacity: 550, 
-                rangeRclRatio: 1.2 // stronger preference of higher RCL rooms
-            },
-            creepSetup => { // callback onQueued
-                let memory = Task.mining.memory(Game.flags[creepSetup.destiny.targetName]);
-                memory.queued[creepSetup.behaviour].push({
-                    room: creepSetup.queueRoom,
-                    name: creepSetup.name,
-                    targetName: flag.name
-                });
-            }
-        );
-    }    
 };
 mod.findSpawning = (roomName, type) => {
     let spawning = [];
@@ -359,7 +373,7 @@ mod.memory = key => {
             remoteMiner:[],
             remoteHauler:[],
             remoteWorker:[],
-            melee:[],
+            ranger:[],
             remoteMineralMiner:[],
         };
     }
@@ -368,8 +382,8 @@ mod.memory = key => {
             remoteMiner: Task.mining.findSpawning(key, 'remoteMiner'),
             remoteHauler: Task.mining.findSpawning(key, 'remoteHauler'),
             remoteWorker: Task.mining.findSpawning(key, 'remoteWorker'),
-            melee: Task.mining.findSpawning(key, 'melee'),
-            mineralMiner: Task.mining.findSpawning(key, 'remoteMineralMiner'),
+            ranger: Task.mining.findSpawning(key, 'ranger'),
+            remoteMineralMiner: Task.mining.findSpawning(key, 'remoteMineralMiner'),
         };
     }
     if( !memory.hasOwnProperty('running') ){
@@ -377,8 +391,8 @@ mod.memory = key => {
             remoteMiner: Task.mining.findRunning(key, 'remoteMiner'),
             remoteHauler: Task.mining.findRunning(key, 'remoteHauler'),
             remoteWorker: Task.mining.findRunning(key, 'remoteWorker'),
-            melee: Task.mining.findRunning(key, 'melee'),
-            mineralMiner: Task.mining.findRunning(key, 'remoteMineralMiner'),
+            ranger: Task.mining.findRunning(key, 'ranger'),
+            remoteMineralMiner: Task.mining.findRunning(key, 'remoteMineralMiner'),
         };
     }
     if( !memory.hasOwnProperty('nextSpawnCheck') ){
@@ -406,7 +420,7 @@ mod.creep = {
         multiBody: [MOVE, MOVE, WORK, CARRY],
         maxMulti: 1,
         behaviour: 'remoteMiner',
-        queue: 'Low' // not much point in hauling or working without a miner, and they're a cheap spawn.
+        queue: 'Medium' // not much point in hauling or working without a miner, and they're a cheap spawn.
     },
     hauler: {
         fixedBody: [CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE, WORK],
@@ -421,22 +435,23 @@ mod.creep = {
         queue: 'Low'
     },
     guard: {
-        //attack: 300hits/tick, heal: 20hits/tick, plain/road walk time: 2,1 tick/step
-        fixedBody: [MOVE,ATTACK,ATTACK,MOVE,ATTACK,ATTACK,MOVE,ATTACK,ATTACK,MOVE,ATTACK,ATTACK,MOVE,ATTACK,ATTACK,MOVE,HEAL,HEAL],
-        multiBody: [],
-        name: "SKguard", 
-        behaviour: "melee", 
+        //ranged_attack: 200hits/tick, heal: 40hits/tick, plain/road walk time: 2,1 tick/step
+        fixedBody: [MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,MOVE,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,RANGED_ATTACK,HEAL,HEAL,HEAL,HEAL],
+        multiBody: [TOUGH,RANGED_ATTACK,MOVE],
+        maxMulti: 10,
+        behaviour: "ranger", 
         queue: 'Medium'
     },
     remoteMineralMiner: {
-        fixedBody: [MOVE, WORK, WORK, WORK, WORK, WORK],
-        multiBody: [MOVE, MOVE, WORK, CARRY],
+        fixedBody: [MOVE, MOVE, MOVE, WORK, WORK, WORK, WORK, WORK, CARRY],
+        multiBody: [MOVE, WORK, WORK],
         maxMulti: 11,
         behaviour: 'remoteMineralMiner',
         queue: 'Low' 
     },
 };
-mod.isKeeperLairSafe = lair=>lair.ticksToSpawn<=20;
+mod.isKeeperLairSafe = lair=>lair.ticksToSpawn>30;
+mod.isKeeperLairSafeForWorker = lair=>lair.ticksToSpawn>7;
 // define action assignment for remote sourcekeeper mining creeps
 mod.nextAction = creep => {
     let keeperLairs = creep.room.find(FIND_HOSTILE_STRUCTURES,{
@@ -444,26 +459,34 @@ mod.nextAction = creep => {
             return object.structureType===STRUCTURE_KEEPER_LAIR && !Task.mining.isKeeperLairSafe(object);
         }
     });
+    let keeperLairsToWorker = _.filter(keeperLairs, function(object) {
+        return object.structureType===STRUCTURE_KEEPER_LAIR && !Task.mining.isKeeperLairSafe(object);
+    });
     // override behaviours nextAction function
     // this could be a global approach to manipulate creep behaviour
     //Guard behaviour:
     //1.Find KeeperLair that its ticksToSpawn < 20,go to there.
     //2.Wait close to KeeperLair,kill alive SourceKeeper.
     //3.Idle.
-    if(creep.data.creepType==='melee') {
+    if(creep.data.creepType==='ranger') {
         //If there are alive hostile creeps,use it orinal nextAction.
-        if(creep.room.name != creep.data.destiny.room) Creep.action.travelling.assign(creep, Game.flags[creep.data.destiny.targetName]);
+        if(creep.room.name != creep.data.destiny.room) {
+            Creep.action.travelling.assign(creep, Game.flags[creep.data.destiny.targetName]);
+            return;
+        }
         if(creep.room.hostiles && creep.room.hostiles.length>0) {
-            Creep.behaviour['melee'].nextAction(creep);
+            Creep.behaviour['ranger'].nextAction(creep);
             return;
         }
         //Find spawning KeeperLair and go there to prepare.
         let spawningKeeperLair = creep.pos.findClosestByRange(keeperLairs);
         //Stay close to keeper lair.
         if(!isNil(spawningKeeperLair)) {
-            creep.drive( spawningKeeperLair.pos, 1, 1, Infinity );
+            Creep.action.travelling.assign(creep, spawningKeeperLair);
+            //creep.drive( spawningKeeperLair.pos, 1, 1, Infinity );
             return;
         }
+        //TODO Heal nearby injured creep
         Creep.action.idle.assign(creep);
         return;
     } 
@@ -471,16 +494,21 @@ mod.nextAction = creep => {
     //1.If creep has't arrive the target room,use its orinal behaviour
     //2.If KeeperLair that its ticksToSpawn < 20 is found close to target, flee away(SOURCE_KEEPER_CREEP_FLEE_DISTANCE)
     //3.If not 2,then use its orinal behaviour.
-    if(keeperLairs.length) {
-        let appendTarget = creep.pos.findInRange(keeperLairs, 4);
-        if(!_.isUndefined(appendTarget)) {
+    if(keeperLairsToWorker.length) {
+        let appendTarget = creep.pos.findInRange(keeperLairsToWorker, 5);
+        if(appendTarget.length) {
             creep.fleeMove(appendTarget);
             return;
         }
     }
+    let hostileCreepInRange = creep.pos.findInRange(creep.room.hostiles, 5);
+    if(hostileCreepInRange.length) {
+        creep.fleeMove();
+        return;
+    }
     //Then we're safe,continue working
     if(creep.data.creepType==='remoteMiner' || creep.data.creepType==='remoteMineralMiner') {
-        Creep.behaviour['remoteMiner'].mine(creep);
+        Creep.behaviour[creep.data.creepType].mine(creep);
     } else {
         Creep.behaviour[creep.data.creepType].nextAction(creep);
     }

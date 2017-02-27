@@ -5,7 +5,7 @@ mod.run = function(creep) {
     // Assign next Action
     let oldTargetId = creep.data.targetId;
     if( creep.action == null || creep.action.name == 'idle' ) {
-        if(creep.room.name===creep.data.destiny.room.name && Room.isSKRoom(creep.data.destiny.room.name)) {
+        if(creep.room.name===creep.data.destiny.room.name && Room.isSKRoom(creep.data.destiny.room)) {
             //If creep's target is SK room
             if( creep.data.destiny && creep.data.destiny.task && Task[creep.data.destiny.task] && Task[creep.data.destiny.task].nextAction ) 
                 Task[creep.data.destiny.task].nextAction(creep);

@@ -12,7 +12,7 @@ mod.fail = ()=>mod.response('Command Operate Fail.');
 mod.help = function() {
 	mod.response("Help Menu Response");
 	mod.response("creep(name),alias of Game.creeps[name]");
-	mod.response("spawn(setup),alias of Game.spawns['<spawnName>'].createCreepBySetup(Creep.setup.worker)");
+	mod.response("spawn(spawnName,setup),alias of Game.spawns['<spawnName>'].createCreepBySetup(Creep.setup.worker)");
 	mod.response("recycle(name,force),recycle creep");
 }
 mod.creep = function(name) {
@@ -21,7 +21,7 @@ mod.creep = function(name) {
 	return creep;
 };
 mod.spawn = function(spawnName,setup) {
-	let returnVal = Game.spawns[spawnName];
+	let returnVal = Game.spawns[spawnName].createCreepBySetup(setup);
 	mod.result(returnVal);
 	return returnVal;
 };

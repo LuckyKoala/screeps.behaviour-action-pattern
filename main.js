@@ -192,7 +192,8 @@ global.install = () => {
             recycler: load("creep.behaviour.recycler"),
             ranger: load("creep.behaviour.ranger"),
             upgrader: load("creep.behaviour.upgrader"),
-            worker: load("creep.behaviour.worker")
+            worker: load("creep.behaviour.worker"),
+            remoteMineralMiner: load('creep.behaviour.remoteMineralMiner'),
         },
         setup: {
             hauler: load("creep.setup.hauler"),

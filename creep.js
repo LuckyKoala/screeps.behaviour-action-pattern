@@ -231,6 +231,9 @@ mod.extend = function(){
             serialize: true,
             ignoreCreeps: ignoreCreeps
         });
+        //Experimental single room path search in case of stuck in the edge
+        //maxRooms:１
+
         if( path && path.length > 4 )
             return path.substr(4);
         else return null;
