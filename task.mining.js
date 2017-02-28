@@ -488,7 +488,7 @@ mod.nextAction = (creep,dontAssign) => {
             //creep.drive( spawningKeeperLair.pos, 1, 1, Infinity );
             return;
         }
-        Creep.action.healing.assign(creep) || Creep.action.idle.assign(creep);
+        if(creep.action && creep.action.name != 'healing') Creep.action.healing.assign(creep) || Creep.action.idle.assign(creep); //TODO do not assign healing unless lair all time more than 80
         return;
     } 
     //Common override behviour of miner,hauler,mineralMiner and worker:
