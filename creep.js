@@ -1,5 +1,5 @@
 const strategy = load("strategy");
-var Traveler = require('Traveler.js');
+var Traveler = load('Traveler');
 
 let mod = {};
 module.exports = mod;

@@ -195,6 +195,7 @@ global.install = () => {
             upgrader: load("creep.behaviour.upgrader"),
             worker: load("creep.behaviour.worker"),
             remoteMineralMiner: load('creep.behaviour.remoteMineralMiner'),
+            ant: load('creep.behaviour.ant'),
         },
         setup: {
             hauler: load("creep.setup.hauler"),
@@ -203,7 +204,8 @@ global.install = () => {
             mineralMiner: load("creep.setup.mineralMiner"),
             privateer: load("creep.setup.privateer"),
             upgrader: load("creep.setup.upgrader"),
-            worker: load("creep.setup.worker")
+            worker: load("creep.setup.worker"),
+            ant: load('creep.setup.ant'),
         }
     });
     global.inject(Creep, load("creep"));
