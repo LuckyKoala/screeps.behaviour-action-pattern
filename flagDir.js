@@ -135,7 +135,7 @@ mod.extend = function(){
         }
     });        
 };
-mod.flush = function(){        
+mod.flush = function(){
     let clear = flag => delete flag.targetOf;
     _.forEach(Game.flags, clear);
     this.list = [];
