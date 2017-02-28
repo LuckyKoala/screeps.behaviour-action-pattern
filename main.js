@@ -224,6 +224,16 @@ global.install = () => {
 };
 global.install();
 
+/*
+const profiler = require('screeps-profiler');
+profiler.enable();
+module.exports.loop = function() {
+    profiler.wrap(function() {
+        // Main.js logic should go here.
+        loopStart();
+    });
+};
+*/
 let cpuAtFirstLoop;
 module.exports.loop = function () {
     const cpuAtLoop = Game.cpu.getUsed();
