@@ -16,82 +16,32 @@ action.isAddableAction = function(creep) {
 action.isValidTarget = function(target, creep){
     return Task.reputation.hostileOwner(target) || action.isActiveLair(target);
 };
-//TODO improve it!
+//TODO optimize about fleeMove so it will calculate too many time.
 action.newTarget = function(creep) {
     if (Room.isSKRoom(creep.pos.roomName)) {
-        const target = _.first(creep.room.find(FIND_STRUCTURES, {filter: function (t) {
-            return !_.isUndefined(t.ticksToSpawn) && action.isActiveLair(t) && creep.pos.getRangeTo(t.pos) < 15;
-        }}));
-
-        if (target) {
-            return target;
-        }
+        let targets = creep.pos.findInRange(FIND_HOSTILE_STRUCTURES, 5, {
+            filter: function(o) {
+                return o.structureType===STRUCTURE_KEEPER_LAIR && action.isActiveLair(o);
+            }
+        });
+        return targets[0];
     }
 
     if (creep.room.situation.invasion) {
-        const target = _.chain(creep.room.hostiles).map(function(target) {
-            // TODO react to players? getStrategyHandler
-            let score = 0;
-            const range = creep.pos.getRangeTo(target);
-            if (creep.owner.username === "Invader") {
-                score = range - 51;
-            } else if (range < 10) {
-                score = range - 11;
-            } else {
-                score = 0;
-            }
-            return {target, score};
-        }).filter('score').sortBy('score').first().get('target').value();
-
-        if (target) {
-            return target;
-        }
+        return creep.room.hostiles[0];
     }
 };
 action.work = function(creep) {
-    if (!(creep.data.safeSpot && creep.data.safeSpot.roomName)) {
-
-        const flag = creep.data.destiny && Game.flags[creep.data.destiny.targetName];
-        if (flag) {
-            creep.data.safeSpot = flag.pos;
-        } else {
-            // find the route home, move toward the exit until out of danger
-            const exit = _.chain(creep.room.findRoute(creep.data.homeRoom)).first().get('exit').value();
-            if (exit) {
-                creep.data.safeSpot = creep.pos.findClosestByRange(exit);
-                creep.data.safeSpot.roomName = creep.pos.roomName;
-            }
-
-        // find the route home, move toward the exit until out of danger
-        const exit = _.chain(creep.room.findRoute(creep.data.homeRoom)).first().get('exit').value();
-        if (exit) {
-            creep.data.safeSpot = creep.pos.findClosestByRange(exit);
-            creep.data.safeSpot.roomName = creep.pos.roomName;
-
-        }
+    if(!creep.target) return;
+    if(creep.target instanceof StructureKeeperLair) {
+        creep.fleeMove(creep.target);
+    } else {
+        creep.fleeMove();
     }
-
-    if (creep.data.safeSpot) {
-        if (creep.pos.getRangeTo(creep.target) < 10) {
-
-            creep.drive(creep.data.safeSpot, 0, 1);
-
-            creep.travelTo(creep.data.safeSpot);
-
-        } else {
-            creep.idleMove();
-        }
-    }
+    return OK;
 };
-action.run = function(creep) {
-    if( action.isValidAction(creep) ) {
-        if (creep.action === action && action.isValidTarget(creep.target, creep) ||
-            action.isAddableAction(creep) && action.assign(creep) ) {
-
-            action.work(creep);
-            return true;
-        }
-    }
+action.step = function(creep) {
+    //
 };
 action.onAssignment = function(creep, target) {
     delete creep.data.safeSpot;
